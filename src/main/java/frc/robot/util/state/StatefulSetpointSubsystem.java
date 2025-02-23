@@ -6,7 +6,10 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Unit;
 
 public abstract class StatefulSetpointSubsystem<
-                T extends Enum<T>, S extends Unit, M extends Measure<S>, U extends MutableMeasure<S, M, ?>>
+                T extends Enum<T>,
+                S extends Unit,
+                M extends Measure<S>,
+                U extends MutableMeasure<S, M, ?>>
         extends StatefulSubsystem<T> {
     private final U setpointTarget;
     private final M errorTolerance;

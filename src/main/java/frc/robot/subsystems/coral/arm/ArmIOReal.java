@@ -15,7 +15,8 @@ import frc.robot.util.sim.PhysicsSim;
 
 public class ArmIOReal implements ArmIO {
     private final TalonFX armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
-    private final MotionMagicTorqueCurrentFOC magicRequest = new MotionMagicTorqueCurrentFOC(0).withSlot(0);
+    private final MotionMagicTorqueCurrentFOC magicRequest =
+            new MotionMagicTorqueCurrentFOC(0).withSlot(0);
 
     StatusSignal<Voltage> appliedVolts = armKraken.getMotorVoltage();
     StatusSignal<Current> currentAmps = armKraken.getSupplyCurrent();
@@ -41,6 +42,10 @@ public class ArmIOReal implements ArmIO {
     @Override
     public void updateInputs(ArmIOInputs inputs) {
         BaseStatusSignal.refreshAll(position, angularVel, appliedVolts, currentAmps);
-        inputs.updateAll(position.getValue(), angularVel.getValue(), appliedVolts.getValue(), currentAmps.getValue());
+        inputs.updateAll(
+                position.getValue(),
+                angularVel.getValue(),
+                appliedVolts.getValue(),
+                currentAmps.getValue());
     }
 }

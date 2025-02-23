@@ -57,7 +57,8 @@ public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase
      *     transition is interrupted.
      */
     public Command transitionTo(T state) {
-        return transitionTo(state, defaultState); // most of the time, this fallback state will be HOLD, which
+        return transitionTo(
+                state, defaultState); // most of the time, this fallback state will be HOLD, which
         // maintains the current position
     }
 

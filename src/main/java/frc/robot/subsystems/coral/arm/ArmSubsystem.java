@@ -16,7 +16,10 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
     ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
 
     public ArmSubsystem(ArmIO io) {
-        super(ArmPosition.HOLD, StateUtils.mutableRotationSetpoint(), Units.Rotations.of(ArmConfig.ANGLE_TOLERANCE));
+        super(
+                ArmPosition.HOLD,
+                StateUtils.mutableRotationSetpoint(),
+                Units.Rotations.of(ArmConfig.ANGLE_TOLERANCE));
         this.io = io;
     }
 

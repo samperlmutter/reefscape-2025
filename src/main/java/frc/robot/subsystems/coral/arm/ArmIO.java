@@ -17,7 +17,10 @@ public interface ArmIO {
         public Current currentAmps = Units.Amps.of(0.0);
 
         public void updateAll(
-                Angle positionRot, AngularVelocity velocityRotPerSec, Voltage appliedVolts, Current current) {
+                Angle positionRot,
+                AngularVelocity velocityRotPerSec,
+                Voltage appliedVolts,
+                Current current) {
             this.positionRot = positionRot;
             this.velocityRotPerSec = velocityRotPerSec;
             this.appliedVolts = appliedVolts;

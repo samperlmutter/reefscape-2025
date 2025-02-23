@@ -34,8 +34,7 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
                 "Closed Loop I Output", talon.getClosedLoopIntegratedOutput().getValueAsDouble());
         backend.log(
                 "Closed Loop D Output", talon.getClosedLoopDerivativeOutput().getValueAsDouble());
-        backend.log(
-                "Applied Control", talon.getAppliedControl().getControlInfo().toString());
+        backend.log("Applied Control", talon.getAppliedControl().getControlInfo().toString());
         backend.log("Forward Limit", talon.getForwardLimit().getValueAsDouble());
         backend.log("Reverse Limit", talon.getReverseLimit().getValueAsDouble());
         backend.log("Active Closed Loop Slot", talon.getClosedLoopSlot().getValue());
@@ -63,20 +62,14 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
                 "Faults/RemoteSensorDataInvalid",
                 talon.getFault_RemoteSensorDataInvalid().getValue());
         backend.log(
-                "Faults/FusedSensorOutOfSync",
-                talon.getFault_FusedSensorOutOfSync().getValue());
+                "Faults/FusedSensorOutOfSync", talon.getFault_FusedSensorOutOfSync().getValue());
         backend.log("Faults/StatorCurrLimit", talon.getFault_StatorCurrLimit().getValue());
         backend.log("Faults/SupplyCurrLimit", talon.getFault_SupplyCurrLimit().getValue());
-        backend.log(
-                "Faults/StaticBrakeDisabled",
-                talon.getFault_StaticBrakeDisabled().getValue());
+        backend.log("Faults/StaticBrakeDisabled", talon.getFault_StaticBrakeDisabled().getValue());
 
         backend.log("Sticky Faults/ProcTemp", talon.getStickyFault_ProcTemp().getValue());
-        backend.log(
-                "Sticky Faults/DeviceTemp", talon.getStickyFault_DeviceTemp().getValue());
-        backend.log(
-                "Sticky Faults/Undervoltage",
-                talon.getStickyFault_Undervoltage().getValue());
+        backend.log("Sticky Faults/DeviceTemp", talon.getStickyFault_DeviceTemp().getValue());
+        backend.log("Sticky Faults/Undervoltage", talon.getStickyFault_Undervoltage().getValue());
         backend.log(
                 "Sticky Faults/BootDuringEnable",
                 talon.getStickyFault_BootDuringEnable().getValue());
@@ -84,16 +77,13 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
                 "Sticky Faults/UnlicensedFeatureInUse",
                 talon.getStickyFault_UnlicensedFeatureInUse().getValue());
         backend.log(
-                "Sticky Faults/BridgeBrownout",
-                talon.getStickyFault_BridgeBrownout().getValue());
+                "Sticky Faults/BridgeBrownout", talon.getStickyFault_BridgeBrownout().getValue());
         backend.log(
                 "Sticky Faults/RemoteSensorPosOverflow",
                 talon.getStickyFault_RemoteSensorPosOverflow().getValue());
+        backend.log("Sticky Faults/OverSupplyV", talon.getStickyFault_OverSupplyV().getValue());
         backend.log(
-                "Sticky Faults/OverSupplyV", talon.getStickyFault_OverSupplyV().getValue());
-        backend.log(
-                "Sticky Faults/UnstableSupplyV",
-                talon.getStickyFault_UnstableSupplyV().getValue());
+                "Sticky Faults/UnstableSupplyV", talon.getStickyFault_UnstableSupplyV().getValue());
         backend.log(
                 "Sticky Faults/ReverseSoftLimit",
                 talon.getStickyFault_ReverseSoftLimit().getValue());
@@ -107,11 +97,9 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
                 "Sticky Faults/FusedSensorOutOfSync",
                 talon.getStickyFault_FusedSensorOutOfSync().getValue());
         backend.log(
-                "Sticky Faults/StatorCurrLimit",
-                talon.getStickyFault_StatorCurrLimit().getValue());
+                "Sticky Faults/StatorCurrLimit", talon.getStickyFault_StatorCurrLimit().getValue());
         backend.log(
-                "Sticky Faults/SupplyCurrLimit",
-                talon.getStickyFault_SupplyCurrLimit().getValue());
+                "Sticky Faults/SupplyCurrLimit", talon.getStickyFault_SupplyCurrLimit().getValue());
         backend.log(
                 "Sticky Faults/StaticBrakeDisabled",
                 talon.getStickyFault_StaticBrakeDisabled().getValue());
