@@ -7,7 +7,6 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -20,8 +19,16 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.algae.AlgaeRollerIO;
+import frc.robot.subsystems.algae.AlgaeRollerIOReal;
+import frc.robot.subsystems.algae.AlgaeRollerSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
+import frc.robot.subsystems.coral.arm.ArmIO;
+import frc.robot.subsystems.coral.arm.ArmIOReal;
+import frc.robot.subsystems.coral.arm.ArmSubsystem;
+import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import java.util.function.BiFunction;
@@ -36,10 +43,11 @@ public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
 
-    @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain;
 
-    @Logged(name = "CoralManipulator")
+    public final ArmSubsystem arm;
+    final ElevatorSubsystem elevatorSubsystem;
+    final GrabberSubsystem grabberSubsystem;
     final CoralManipulatorSystem coralManipulator;
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -51,12 +59,33 @@ public class RobotContainer {
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
     private final CommandJoystick joystick = new CommandJoystick(0);
+    private final AlgaeRollerSubsystem algaeRollerSubsystem;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
-        coralManipulator = new CoralManipulatorSystem();
+
+        switch (Constants.CURRENT_MODE) {
+            case REAL -> {
+                algaeRollerSubsystem = new AlgaeRollerSubsystem(new AlgaeRollerIOReal(false));
+                arm = new ArmSubsystem(new ArmIOReal(false));
+            }
+            case SIM -> {
+                algaeRollerSubsystem = new AlgaeRollerSubsystem(new AlgaeRollerIOReal(true));
+                arm = new ArmSubsystem(new ArmIOReal(true));
+            }
+            default -> {
+                algaeRollerSubsystem = new AlgaeRollerSubsystem(new AlgaeRollerIO() {});
+                arm = new ArmSubsystem(new ArmIO() {});
+            }
+        }
+
+        elevatorSubsystem = new ElevatorSubsystem();
+        grabberSubsystem = new GrabberSubsystem();
+
+        coralManipulator = new CoralManipulatorSystem(arm, elevatorSubsystem, grabberSubsystem);
+
         configureBindings();
         assembleMechanisms();
     }

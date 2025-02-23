@@ -5,6 +5,8 @@
 
 package frc.robot.constants;
 
+import edu.wpi.first.wpilibj.RobotBase;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -17,4 +19,11 @@ public final class Constants {
     public static final int XBOX_CONTROLLER_PORT = 1;
     public static final String CANIVORE_BUS = "canivoreBus";
     public static final String RIO_BUS = "rio";
+    public static final Mode CURRENT_MODE = RobotBase.isReal() ? Mode.REAL : Mode.SIM;
+
+    public static enum Mode {
+        REAL,
+        SIM,
+        REPLAY
+    }
 }

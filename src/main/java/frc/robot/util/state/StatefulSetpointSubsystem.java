@@ -1,7 +1,6 @@
 package frc.robot.util.state;
 
 import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Unit;
@@ -18,7 +17,7 @@ public abstract class StatefulSetpointSubsystem<
         this.errorTolerance = errorTolerance;
     }
 
-    public abstract StatusSignal<M> currentStateSignal();
+    public abstract M currentPosition();
 
     public abstract M determineSetpoint(T targetState);
 
@@ -32,12 +31,7 @@ public abstract class StatefulSetpointSubsystem<
     }
 
     @Override
-    public void runPeriodic() {
-        currentStateSignal().refresh();
-    }
-
-    @Override
     protected boolean isTransitionFinished() {
-        return currentStateSignal().getValue().isNear(setpointTarget, errorTolerance);
+        return currentPosition().isNear(setpointTarget, errorTolerance);
     }
 }

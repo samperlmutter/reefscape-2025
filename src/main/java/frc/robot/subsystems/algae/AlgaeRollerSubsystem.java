@@ -1,27 +1,29 @@
 package frc.robot.subsystems.algae;
 
-import static frc.robot.constants.Constants.*;
-import static frc.robot.constants.Constants.RIO_BUS;
-
-import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
-@Logged
 public class AlgaeRollerSubsystem extends SubsystemBase {
-    private final TalonFX roller = new TalonFX(AlgaeRollerConfig.ROLLER_ID, RIO_BUS);
+    private final AlgaeRollerIO io;
+    private final AlgaeRollerIOInputsAutoLogged inputs = new AlgaeRollerIOInputsAutoLogged();
 
-    public AlgaeRollerSubsystem() {
-        roller.getConfigurator().apply(AlgaeRollerConfig.TALON_FX_CONFIGURATION);
+    public AlgaeRollerSubsystem(AlgaeRollerIO io) {
+        this.io = io;
+    }
+
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("AlgaeRoller", inputs);
     }
 
     private void setRollerSpeed(double speed) {
-        roller.set(speed);
+        io.setDutyCycle(speed);
     }
 
     private void stop() {
-        roller.stopMotor();
+        io.stop();
     }
 
     public Command spinRoller(double speed) {
