@@ -17,28 +17,23 @@ class AlgaeRollerConfig {
     static final double VELOCITY_STATUS_FRAME = 0.01;
     static final double GEAR_RATIO = 1;
 
-    private static final Slot0Configs SLOT_0_CONFIGS =
-            new Slot0Configs()
-                    .withKP(0) // alphabot
-                    .withKI(0) // alphabot
-                    .withKD(0) // alphabot
-                    .withKG(0) // alphabot
-                    .withKV(0) // alphabot
-                    .withKA(0) // alphabot
-                    .withGravityType(GravityTypeValue.Arm_Cosine);
+    private static final Slot0Configs SLOT_0_CONFIGS = new Slot0Configs()
+            .withKP(0) // alphabot
+            .withKI(0) // alphabot
+            .withKD(0) // alphabot
+            .withKG(0) // alphabot
+            .withKV(0) // alphabot
+            .withKA(0) // alphabot
+            .withGravityType(GravityTypeValue.Arm_Cosine);
 
-    static final TalonFXConfiguration TALON_FX_CONFIGURATION =
-            new TalonFXConfiguration()
-                    .withFeedback(
-                            new FeedbackConfigs()
-                                    .withFeedbackRemoteSensorID(0)
-                                    .withFeedbackSensorSource(
-                                            FeedbackSensorSourceValue.FusedCANcoder)
-                                    .withSensorToMechanismRatio(GEAR_RATIO) // alphabot
-                                    .withRotorToSensorRatio(1)) // alphabot
-                    .withMotorOutput(
-                            new MotorOutputConfigs()
-                                    .withInverted(InvertedValue.Clockwise_Positive)
-                                    .withNeutralMode(NeutralModeValue.Coast))
-                    .withSlot0(SLOT_0_CONFIGS);
+    static final TalonFXConfiguration TALON_FX_CONFIGURATION = new TalonFXConfiguration()
+            .withFeedback(new FeedbackConfigs()
+                    .withFeedbackRemoteSensorID(0)
+                    .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+                    .withSensorToMechanismRatio(GEAR_RATIO) // alphabot
+                    .withRotorToSensorRatio(1)) // alphabot
+            .withMotorOutput(new MotorOutputConfigs()
+                    .withInverted(InvertedValue.Clockwise_Positive)
+                    .withNeutralMode(NeutralModeValue.Coast))
+            .withSlot0(SLOT_0_CONFIGS);
 }

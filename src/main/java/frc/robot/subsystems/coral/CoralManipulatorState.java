@@ -17,8 +17,7 @@ public enum CoralManipulatorState {
     private final ElevatorPosition elevatorPosition;
     private final GrabberState grabberState;
 
-    CoralManipulatorState(
-            ArmPosition armPosition, ElevatorPosition elevatorPosition, GrabberState grabberState) {
+    CoralManipulatorState(ArmPosition armPosition, ElevatorPosition elevatorPosition, GrabberState grabberState) {
         this.armPosition = armPosition;
         this.elevatorPosition = elevatorPosition;
         this.grabberState = grabberState;

@@ -25,13 +25,10 @@ import frc.robot.util.state.StateUtils;
 import frc.robot.util.state.StatefulSetpointSubsystem;
 
 @Logged
-public class ElevatorSubsystem
-        extends StatefulSetpointSubsystem<ElevatorPosition, AngleUnit, Angle, MutAngle>
+public class ElevatorSubsystem extends StatefulSetpointSubsystem<ElevatorPosition, AngleUnit, Angle, MutAngle>
         implements SimulatableMechanism {
-    private final TalonFX primaryElevatorMotor =
-            new TalonFX(ElevatorConfig.primaryElevatorMotorID, RIO_BUS);
-    private final TalonFX secondaryElevatorMotor =
-            new TalonFX(ElevatorConfig.secondaryElevatorMotorID, RIO_BUS);
+    private final TalonFX primaryElevatorMotor = new TalonFX(ElevatorConfig.primaryElevatorMotorID, RIO_BUS);
+    private final TalonFX secondaryElevatorMotor = new TalonFX(ElevatorConfig.secondaryElevatorMotorID, RIO_BUS);
     private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
 
     private final MotionMagicTorqueCurrentFOC magicRequest =
@@ -45,11 +42,9 @@ public class ElevatorSubsystem
                 Units.Rotations.of(ElevatorConfig.HEIGHT_TOLERANCE));
         primaryElevatorMotor.getConfigurator().apply(primaryTalonFXConfigs);
         secondaryElevatorMotor.getConfigurator().apply(secondaryTalonFXConfigs);
-        secondaryElevatorMotor.setControl(
-                new Follower(ElevatorConfig.primaryElevatorMotorID, true));
+        secondaryElevatorMotor.setControl(new Follower(ElevatorConfig.primaryElevatorMotorID, true));
 
-        new Trigger(this::getMagSwitch)
-                .onTrue(zeroPosition().andThen(transitionTo(ElevatorPosition.BOTTOM)));
+        new Trigger(this::getMagSwitch).onTrue(zeroPosition().andThen(transitionTo(ElevatorPosition.BOTTOM)));
 
         if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
@@ -72,9 +67,7 @@ public class ElevatorSubsystem
 
     @Override
     public Angle determineSetpoint(ElevatorPosition targetState) {
-        return targetState == ElevatorPosition.HOLD
-                ? elevatorPosition.getValue()
-                : targetState.getHeight();
+        return targetState == ElevatorPosition.HOLD ? elevatorPosition.getValue() : targetState.getHeight();
     }
 
     @Override
