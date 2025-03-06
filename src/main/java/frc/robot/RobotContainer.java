@@ -27,6 +27,8 @@ import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.coral.arm.ArmIO;
 import frc.robot.subsystems.coral.arm.ArmIOReal;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
+import frc.robot.subsystems.coral.elevator.ElevatorIO;
+import frc.robot.subsystems.coral.elevator.ElevatorIOReal;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -72,18 +74,20 @@ public class RobotContainer {
             case REAL -> {
                 algaeRollerSubsystem = new AlgaeRollerSubsystem(new AlgaeRollerIOReal(false));
                 arm = new ArmSubsystem(new ArmIOReal(false));
+                elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal(false));
             }
             case SIM -> {
                 algaeRollerSubsystem = new AlgaeRollerSubsystem(new AlgaeRollerIOReal(true));
                 arm = new ArmSubsystem(new ArmIOReal(true));
+                elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal(true));
             }
             default -> {
                 algaeRollerSubsystem = new AlgaeRollerSubsystem(new AlgaeRollerIO() {});
                 arm = new ArmSubsystem(new ArmIO() {});
+                elevatorSubsystem = new ElevatorSubsystem(new ElevatorIO() {});
             }
         }
 
-        elevatorSubsystem = new ElevatorSubsystem();
         grabberSubsystem = new GrabberSubsystem();
 
         coralManipulator = new CoralManipulatorSystem(arm, elevatorSubsystem, grabberSubsystem);

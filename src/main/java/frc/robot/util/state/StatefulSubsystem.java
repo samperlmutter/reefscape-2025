@@ -87,6 +87,10 @@ public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase
         return Optional.ofNullable(wantedState);
     }
 
+    public T getDefaultState() {
+        return defaultState;
+    }
+
     public boolean isTransitioning() {
         return wantedState != null;
     }
