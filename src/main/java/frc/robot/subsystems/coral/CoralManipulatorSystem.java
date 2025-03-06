@@ -3,6 +3,7 @@ package frc.robot.subsystems.coral;
 import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
@@ -115,22 +116,23 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     protected StatusCode initializeTransition(CoralManipulatorState targetState) {
         Command coralManipulatorCommand;
 
-        if (getCurrentState()
-                        .getElevatorPosition()
-                        .getHeight()
-                        .lt(ElevatorPosition.SAFE_POSITION.getHeight())
-                && getCurrentState() != targetState) {
-            if (targetState == CoralManipulatorState.SCORE_L2) {
+        if (armIsTransitioningDangerZone()) {
+            if (isElevatorGoingSafety()) {
                 coralManipulatorCommand =
-                        elevator.transitionTo(targetState.getElevatorPosition())
-                                .andThen(arm.transitionTo(targetState.getArmPosition()))
-                                .andThen(grabber.transitionTo(targetState.getGrabberState()));
+                        Commands.sequence(
+                                elevator.transitionTo(ElevatorPosition.SAFE_POSITION),
+                                arm.transitionTo(targetState.getArmPosition())
+                                        .alongWith(
+                                                elevator.transitionTo(
+                                                        targetState.getElevatorPosition())),
+                                grabber.transitionTo(targetState.getGrabberState()));
             } else {
                 coralManipulatorCommand =
-                        elevator.transitionTo(ElevatorPosition.SAFE_POSITION)
-                                .andThen(arm.transitionTo(targetState.getArmPosition()))
-                                .andThen(elevator.transitionTo(targetState.getElevatorPosition()))
-                                .andThen(grabber.transitionTo(targetState.getGrabberState()));
+                        Commands.sequence(
+                                elevator.transitionTo(ElevatorPosition.SAFE_POSITION),
+                                arm.transitionTo(targetState.getArmPosition()),
+                                elevator.transitionTo(targetState.getElevatorPosition()),
+                                grabber.transitionTo(targetState.getGrabberState()));
             }
         } else {
             coralManipulatorCommand =
@@ -142,6 +144,18 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         coralManipulatorCommand.schedule();
 
         return StatusCode.OK;
+    }
+
+    private boolean isElevatorGoingSafety() {
+        return wantedState
+                .getElevatorPosition()
+                .getHeight()
+                .gt(ElevatorPosition.SAFE_POSITION.getHeight());
+    }
+
+    boolean armIsTransitioningDangerZone() {
+        return arm.currentStateSignal().getValue().lt(ArmPosition.POS_L1.getAngle())
+                || wantedState.getArmPosition().getAngle().lt(ArmPosition.POS_L1.getAngle());
     }
 
     @Override

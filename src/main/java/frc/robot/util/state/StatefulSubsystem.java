@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase {
     private T currentState;
-    private T wantedState;
+    protected T wantedState;
     private final T defaultState;
     private boolean transitionStarted = false;
 

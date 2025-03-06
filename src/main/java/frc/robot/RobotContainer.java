@@ -51,7 +51,7 @@ public class RobotContainer {
             new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
-    private final CommandJoystick joystick = new CommandJoystick(0);
+    private final CommandJoystick simJoy = new CommandJoystick(2);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -100,11 +100,15 @@ public class RobotContainer {
         secondaryXboxController
                 .povLeft()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        primaryXboxController.
-                leftTrigger()
-                .onTrue(coralManipulator.selectQueuedStateCommand());
-        primaryXboxController.
-                rightTrigger().onTrue((coralManipulator.scoreState()));
+        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
+        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+
+        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
+        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
 
     private void assembleMechanisms() {
