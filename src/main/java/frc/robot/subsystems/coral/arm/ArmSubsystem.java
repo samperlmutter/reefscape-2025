@@ -21,10 +21,12 @@ import frc.robot.util.state.StatefulSetpointSubsystem;
 public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUnit, Angle, MutAngle>
         implements SimulatableMechanism {
     private final TalonFX armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.RIO_BUS);
+    private final NeutralOut neutralOut = new NeutralOut();
     private final MotionMagicTorqueCurrentFOC magicRequest =
             new MotionMagicTorqueCurrentFOC(0).withSlot(0);
 
     private final StatusSignal<Angle> armPosition = armKraken.getPosition();
+    private final StatusSignal<Double> armTargetPos = armKraken.getClosedLoopReference();
 
     public ArmSubsystem() {
         super(
@@ -32,7 +34,7 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
                 StateUtils.mutableRotationSetpoint(),
                 Units.Rotations.of(ArmConfig.ANGLE_TOLERANCE));
         armKraken.getConfigurator().apply(ArmConfig.talonFXConfiguration);
-        CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS);
+        CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.RIO_BUS);
 
         armEncoder.getConfigurator().apply(ArmConfig.cancoderConfiguration);
 
@@ -57,7 +59,23 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
     }
 
     @Override
-    public double updateMechPos() {
-        return (armPosition.getValueAsDouble() * 360.0) - 90;
+    public Angle getCurrentPosition() {
+        return armPosition.getValue();
+    }
+
+    @Override
+    public Angle getTargetPosition() {
+        return Units.Rotations.of(armTargetPos.getValue());
+    }
+
+    @Override
+    public boolean isTransitionFinished() {
+        boolean transtionFinished = super.isTransitionFinished();
+        if (transtionFinished
+                && transitioningTo().isPresent()
+                && transitioningTo().get().equals(ArmPosition.GROUND)) {
+            armKraken.setControl(neutralOut);
+        }
+        return transtionFinished;
     }
 }

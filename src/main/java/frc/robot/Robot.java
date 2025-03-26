@@ -10,10 +10,12 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.util.sim.PhysicsSim;
+import org.littletonrobotics.frc2025.BuildConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -37,6 +39,9 @@ public class Robot extends TimedRobot {
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
         Epilogue.bind(this);
+        SmartDashboard.putString("Build Date", BuildConstants.BUILD_DATE);
+        SmartDashboard.putString("GIT SHA", BuildConstants.GIT_SHA);
+        SmartDashboard.putString("Git Branch", BuildConstants.GIT_BRANCH);
     }
 
     /**
@@ -46,10 +51,14 @@ public class Robot extends TimedRobot {
      * <p>This runs after the mode specific periodic methods, but before LiveWindow and
      * SmartDashboard integrated updating.
      */
+    String llName = "limelight";
+
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         robotContainer.updateMechanisms();
+        robotContainer.updateVision();
+        //  robotContainer.updateVisionSim();
     }
 
     /** This method is called once each time the robot enters Disabled mode. */
