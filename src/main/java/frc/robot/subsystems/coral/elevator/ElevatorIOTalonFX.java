@@ -13,10 +13,11 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.Robot;
 import frc.robot.util.sim.PhysicsSim;
 import org.littletonrobotics.junction.Logger;
 
-public class ElevatorIOReal implements ElevatorIO {
+public class ElevatorIOTalonFX implements ElevatorIO {
     private final TalonFX primaryElevatorMotor = new TalonFX(ElevatorConfig.primaryElevatorMotorID, RIO_BUS);
     private final TalonFX secondaryElevatorMotor = new TalonFX(ElevatorConfig.secondaryElevatorMotorID, RIO_BUS);
     private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
@@ -32,12 +33,12 @@ public class ElevatorIOReal implements ElevatorIO {
     private final StatusSignal<Current> primaryCurrentAmps = primaryElevatorMotor.getStatorCurrent();
     private final StatusSignal<Current> secondaryCurrentAmps = secondaryElevatorMotor.getSupplyCurrent();
 
-    public ElevatorIOReal(boolean isSim) {
+    public ElevatorIOTalonFX() {
         primaryElevatorMotor.getConfigurator().apply(ElevatorConfig.primaryTalonFXConfigs);
         secondaryElevatorMotor.getConfigurator().apply(ElevatorConfig.secondaryTalonFXConfigs);
-        magicRequest = new MotionMagicTorqueCurrentFOC(0).withSlot(isSim ? 1 : 0);
+        magicRequest = new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
 
-        if (isSim) {
+        if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
             PhysicsSim.getInstance().addTalonFX(secondaryElevatorMotor);
         }

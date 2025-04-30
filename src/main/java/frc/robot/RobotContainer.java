@@ -25,10 +25,10 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.coral.arm.ArmIO;
-import frc.robot.subsystems.coral.arm.ArmIOReal;
+import frc.robot.subsystems.coral.arm.ArmIOTalonFX;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.elevator.ElevatorIO;
-import frc.robot.subsystems.coral.elevator.ElevatorIOReal;
+import frc.robot.subsystems.coral.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.coral.grabber.GrabberIOTalonFX;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
@@ -94,13 +94,9 @@ public class RobotContainer {
         drivetrain = TunerConstants.createDrivetrain();
 
         switch (Constants.CURRENT_MODE) {
-            case REAL -> {
-                arm = new ArmSubsystem(new ArmIOReal(false));
-                elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal(false));
-            }
-            case SIM -> {
-                arm = new ArmSubsystem(new ArmIOReal(true));
-                elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOReal(true));
+            case REAL, SIM -> {
+                arm = new ArmSubsystem(new ArmIOTalonFX());
+                elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
             }
             default -> {
                 arm = new ArmSubsystem(new ArmIO() {});
