@@ -50,20 +50,16 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private Optional<EstimatedRobotPose> estimatedRobotPose = Optional.empty();
 
     public PhotonAprilTagSystem(
-            String cameraName,
-            Transform3d cameraTransform,
-            CommandSwerveDrivetrain commandSwerveDrivetrain) {
+            String cameraName, Transform3d cameraTransform, CommandSwerveDrivetrain commandSwerveDrivetrain) {
         this.camera = new PhotonCamera(cameraName);
         this.cameraTransform = cameraTransform;
-        this.photonPoseEstimator =
-                new PhotonPoseEstimator(
-                        AprilTagConstants.APRIL_TAG_FIELD_LAYOUT,
-                        PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                        cameraTransform);
+        this.photonPoseEstimator = new PhotonPoseEstimator(
+                AprilTagConstants.APRIL_TAG_FIELD_LAYOUT,
+                PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+                cameraTransform);
         this.drivetrain = commandSwerveDrivetrain;
 
-        photonPoseEstimator.setMultiTagFallbackStrategy(
-                PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_LAST_POSE);
+        photonPoseEstimator.setMultiTagFallbackStrategy(PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_LAST_POSE);
     }
 
     @Override
@@ -82,9 +78,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         double highestLatency = 0;
 
         for (PhotonPipelineResult result : results) {
-            estimatedRobotPose =
-                    photonPoseEstimator.update(
-                            result, camera.getCameraMatrix(), camera.getDistCoeffs());
+            estimatedRobotPose = photonPoseEstimator.update(result, camera.getCameraMatrix(), camera.getDistCoeffs());
 
             earliestTimestamp = Math.min(earliestTimestamp, result.getTimestampSeconds());
             highestLatency = Math.max(highestLatency, result.metadata.getLatencyMillis());
@@ -105,8 +99,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
             }
         }
 
-        aprilTagResults =
-                new AprilTagResults(earliestTimestamp, highestLatency, aprilTagDetections);
+        aprilTagResults = new AprilTagResults(earliestTimestamp, highestLatency, aprilTagDetections);
     }
 
     public void setCamera(PhotonCamera camera) {
@@ -118,8 +111,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
             return Optional.empty();
         }
 
-        Optional<Pose3d> optAprilTagPose =
-                AprilTagConstants.APRIL_TAG_FIELD_LAYOUT.getTagPose(target.fiducialId);
+        Optional<Pose3d> optAprilTagPose = AprilTagConstants.APRIL_TAG_FIELD_LAYOUT.getTagPose(target.fiducialId);
 
         if (optAprilTagPose.isEmpty()) {
             return Optional.empty();
@@ -127,19 +119,13 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
         Pose3d aprilTagPose = optAprilTagPose.get();
 
-        Pose3d robotPose =
-                PhotonUtils.estimateFieldToRobotAprilTag(
-                        target.bestCameraToTarget, aprilTagPose, cameraTransform.inverse());
+        Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
+                target.bestCameraToTarget, aprilTagPose, cameraTransform.inverse());
 
-        Pose3d targetPose =
-                new Pose3d().transformBy(cameraTransform).transformBy(target.bestCameraToTarget);
+        Pose3d targetPose = new Pose3d().transformBy(cameraTransform).transformBy(target.bestCameraToTarget);
 
-        return Optional.of(
-                new AprilTagDetection(
-                        target.getFiducialId(),
-                        robotPose.toPose2d(),
-                        targetPose.toPose2d(),
-                        target.getPoseAmbiguity()));
+        return Optional.of(new AprilTagDetection(
+                target.getFiducialId(), robotPose.toPose2d(), targetPose.toPose2d(), target.getPoseAmbiguity()));
     }
 
     @Override
@@ -150,11 +136,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     @Override
     public Optional<AprilTagPose> getEstimatedPose() {
         return estimatedRobotPose.map(
-                e ->
-                        new AprilTagPose(
-                                e.estimatedPose.toPose2d(),
-                                e.targetsUsed.size(),
-                                e.timestampSeconds));
+                e -> new AprilTagPose(e.estimatedPose.toPose2d(), e.targetsUsed.size(), e.timestampSeconds));
     }
 
     @Override

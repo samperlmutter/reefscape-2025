@@ -2,8 +2,9 @@ package frc.robot.subsystems.coral.elevator;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import frc.robot.util.State;
 
-public enum ElevatorPosition implements Comparable<ElevatorPosition> {
+public enum ElevatorPosition implements Comparable<ElevatorPosition>, State<Angle> {
     BOTTOM(0.0),
     INTAKE(1.9),
     SAFE_POSITION(2.2),
@@ -23,7 +24,8 @@ public enum ElevatorPosition implements Comparable<ElevatorPosition> {
         this.height = height;
     }
 
-    public Angle getHeight() {
+    @Override
+    public Angle get() {
         return height;
     }
 }

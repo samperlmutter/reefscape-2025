@@ -2,8 +2,9 @@ package frc.robot.subsystems.coral.wrist;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import frc.robot.util.State;
 
-public enum WristPositions {
+public enum WristPositions implements State<Angle> {
     SAFE(0),
     UNSAFE(0.25),
     HOLD(-1);
@@ -14,7 +15,8 @@ public enum WristPositions {
         this.angle = Units.Rotations.of(angle);
     }
 
-    public Angle getAngle() {
+    @Override
+    public Angle get() {
         return angle;
     }
 }

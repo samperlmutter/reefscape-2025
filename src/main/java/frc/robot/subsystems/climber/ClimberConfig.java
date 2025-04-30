@@ -11,34 +11,25 @@ class ClimberConfig {
     static final NeutralModeValue climberNeutralMode = NeutralModeValue.Brake;
     static final int canCoderId = 5;
 
-    static final TalonFXConfiguration climberTalonFXConfigs =
-            new TalonFXConfiguration()
-                    .withSlot0(
-                            new Slot0Configs()
-                                    .withKP(0)
-                                    .withKI(0)
-                                    .withKD(0)
-                                    .withKG(0)
-                                    .withKA(0)
-                                    .withKV(0))
-                    .withMotionMagic(
-                            new MotionMagicConfigs()
-                                    .withMotionMagicAcceleration(0)
-                                    .withMotionMagicCruiseVelocity(0)
-                                    .withMotionMagicJerk(0))
-                    .withMotorOutput(
-                            new MotorOutputConfigs()
-                                    .withInverted(climberInversion)
-                                    .withNeutralMode(climberNeutralMode))
-                    .withFeedback(
-                            new FeedbackConfigs()
-                                    .withRotorToSensorRatio(5.333333333333333)
-                                    .withSensorToMechanismRatio(3.47222222222222));
-    static final CANcoderConfiguration cancoderConfiguration =
-            new CANcoderConfiguration()
-                    .withMagnetSensor(
-                            new MagnetSensorConfigs()
-                                    .withMagnetOffset(0)
-                                    .withSensorDirection(
-                                            SensorDirectionValue.CounterClockwise_Positive));
+    static final TalonFXConfiguration climberTalonFXConfigs = new TalonFXConfiguration()
+            .withSlot0(new Slot0Configs()
+                    .withKP(0)
+                    .withKI(0)
+                    .withKD(0)
+                    .withKG(0)
+                    .withKA(0)
+                    .withKV(0))
+            .withMotionMagic(new MotionMagicConfigs()
+                    .withMotionMagicAcceleration(0)
+                    .withMotionMagicCruiseVelocity(0)
+                    .withMotionMagicJerk(0))
+            .withMotorOutput(
+                    new MotorOutputConfigs().withInverted(climberInversion).withNeutralMode(climberNeutralMode))
+            .withFeedback(new FeedbackConfigs()
+                    .withRotorToSensorRatio(5.333333333333333)
+                    .withSensorToMechanismRatio(3.47222222222222));
+    static final CANcoderConfiguration cancoderConfiguration = new CANcoderConfiguration()
+            .withMagnetSensor(new MagnetSensorConfigs()
+                    .withMagnetOffset(0)
+                    .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive));
 }

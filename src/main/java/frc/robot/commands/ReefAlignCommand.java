@@ -22,20 +22,17 @@ public class ReefAlignCommand extends Command {
 
     private final AprilTagSubsystem reefCam1;
     private final AprilTagSubsystem reefCam2;
-    private final Transform2d leftBranchTransform =
-            new Transform2d(
-                    edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(8.04)),
-                    edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(6.47)),
-                    Rotation2d.kZero);
-    private final Transform2d rightBranchTransform =
-            new Transform2d(
-                    edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(8.04)),
-                    edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(-6.47)),
-                    Rotation2d.kZero);
-    private final SwerveRequest.RobotCentricFacingAngle swerveReq =
-            new SwerveRequest.RobotCentricFacingAngle()
-                    .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
-                    .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1);
+    private final Transform2d leftBranchTransform = new Transform2d(
+            edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(8.04)),
+            edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(6.47)),
+            Rotation2d.kZero);
+    private final Transform2d rightBranchTransform = new Transform2d(
+            edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(8.04)),
+            edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(-6.47)),
+            Rotation2d.kZero);
+    private final SwerveRequest.RobotCentricFacingAngle swerveReq = new SwerveRequest.RobotCentricFacingAngle()
+            .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
+            .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1);
     private final SwerveRequest.Idle stopReq = new SwerveRequest.Idle();
     AprilTagDetection lockedOnAprilTag;
     boolean isLeftBranch = false;
@@ -74,10 +71,16 @@ public class ReefAlignCommand extends Command {
         Optional<AprilTagDetection> reefCam2Detection = reefCam2.getBestDetection();
 
         if (reefCam1Detection.isPresent() && reefCam2Detection.isPresent()) {
-            double reefCam1Distance =
-                    reefCam1Detection.get().getRobotToTargetPose().getTranslation().getNorm();
-            double reefCam2Distance =
-                    reefCam2Detection.get().getRobotToTargetPose().getTranslation().getNorm();
+            double reefCam1Distance = reefCam1Detection
+                    .get()
+                    .getRobotToTargetPose()
+                    .getTranslation()
+                    .getNorm();
+            double reefCam2Distance = reefCam2Detection
+                    .get()
+                    .getRobotToTargetPose()
+                    .getTranslation()
+                    .getNorm();
 
             return reefCam1Distance > reefCam2Distance ? reefCam2Detection : reefCam1Detection;
         }
@@ -116,17 +119,12 @@ public class ReefAlignCommand extends Command {
         }
 
         Pose2d targetVisionPose = reefCamDetection.getRobotToTargetPose();
-        Pose2d targetBranchPose =
-                targetVisionPose
-                        .transformBy(isLeftBranch ? leftBranchTransform : rightBranchTransform)
-                        .transformBy(new Transform2d(0.1, 0, Rotation2d.kZero));
-        field.setRobotPose(
-                reefCamDetection
-                        .getRobotInFieldPose()
-                        .transformBy(
-                                new Transform2d(
-                                        targetBranchPose.getTranslation(),
-                                        targetBranchPose.getRotation())));
+        Pose2d targetBranchPose = targetVisionPose
+                .transformBy(isLeftBranch ? leftBranchTransform : rightBranchTransform)
+                .transformBy(new Transform2d(0.1, 0, Rotation2d.kZero));
+        field.setRobotPose(reefCamDetection
+                .getRobotInFieldPose()
+                .transformBy(new Transform2d(targetBranchPose.getTranslation(), targetBranchPose.getRotation())));
         field2.setRobotPose(targetVisionPose);
         Pose2d drivetrainPose = commandSwerveDrivetrain.getState().Pose;
         SmartDashboard.putData("ATarget Branch Pose", field);
@@ -134,25 +132,21 @@ public class ReefAlignCommand extends Command {
         SmartDashboard.putNumber("ErrorX", movementXPIDController.getError());
         SmartDashboard.putNumber("ErrorY", movementYPIDController.getError());
 
-        double degreeAprilTag = lockedOnAprilTag.getRobotToTargetPose().getRotation().getDegrees();
+        double degreeAprilTag =
+                lockedOnAprilTag.getRobotToTargetPose().getRotation().getDegrees();
         boolean isRightFacingReef = Math.abs(degreeAprilTag - 90) > Math.abs(degreeAprilTag + 90);
 
         // right cam, 90 | left cam, -90
         Rotation2d visionTargetAngularDistance =
-                Rotation2d.fromDegrees(isRightFacingReef ? 90 : -90)
-                        .minus(targetVisionPose.getRotation());
+                Rotation2d.fromDegrees(isRightFacingReef ? 90 : -90).minus(targetVisionPose.getRotation());
 
-        Rotation2d driveTargetDirection =
-                drivetrainPose.getRotation().minus(visionTargetAngularDistance);
+        Rotation2d driveTargetDirection = drivetrainPose.getRotation().minus(visionTargetAngularDistance);
 
         double veloX = movementXPIDController.calculate(0, targetBranchPose.getX());
         double veloY = movementYPIDController.calculate(0, targetBranchPose.getY());
 
         commandSwerveDrivetrain.setControl(
-                swerveReq
-                        .withVelocityX(veloX)
-                        .withVelocityY(veloY)
-                        .withTargetDirection(driveTargetDirection));
+                swerveReq.withVelocityX(veloX).withVelocityY(veloY).withTargetDirection(driveTargetDirection));
     }
 
     @Override

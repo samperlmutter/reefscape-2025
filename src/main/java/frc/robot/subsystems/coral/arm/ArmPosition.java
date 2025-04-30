@@ -2,9 +2,9 @@ package frc.robot.subsystems.coral.arm;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
-import frc.robot.util.state.SetpointEnum;
+import frc.robot.util.State;
 
-public enum ArmPosition implements SetpointEnum {
+public enum ArmPosition implements State<Angle> {
     DOWN(-0.254),
     UP(0.254),
     POS_L1(-0.1),
@@ -34,10 +34,8 @@ public enum ArmPosition implements SetpointEnum {
         this.angle = angle;
     }
 
-    public Angle getAngle() {
+    @Override
+    public Angle get() {
         return angle;
     }
-
-    @Override
-    public void validateOrdering() {}
 }

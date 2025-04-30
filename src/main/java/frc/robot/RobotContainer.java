@@ -23,7 +23,6 @@ import frc.robot.commands.AutoNamedCommands;
 import frc.robot.commands.ReefAlignCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.climber.ClimberSubsystem;
-import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.coral.arm.ArmIO;
 import frc.robot.subsystems.coral.arm.ArmIOReal;
@@ -31,7 +30,7 @@ import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.elevator.ElevatorIO;
 import frc.robot.subsystems.coral.elevator.ElevatorIOReal;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.coral.grabber.GrabberState;
+import frc.robot.subsystems.coral.grabber.GrabberIOTalonFX;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
 import frc.robot.subsystems.coral.wrist.WristSubsystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -57,21 +56,13 @@ public class RobotContainer {
 
     final CommandSwerveDrivetrain drivetrain;
 
-    Transform3d camTrans1 =
-            new Transform3d(
-                    new Translation3d(
-                            Units.inchesToMeters(-8),
-                            Units.inchesToMeters(-7),
-                            Units.inchesToMeters(22.5)),
-                    new Rotation3d(0, Math.toRadians(30), Math.toRadians(90)));
+    Transform3d camTrans1 = new Transform3d(
+            new Translation3d(Units.inchesToMeters(-8), Units.inchesToMeters(-7), Units.inchesToMeters(22.5)),
+            new Rotation3d(0, Math.toRadians(30), Math.toRadians(90)));
 
-    Transform3d camTrans2 =
-            new Transform3d(
-                    new Translation3d(
-                            Units.inchesToMeters(-8),
-                            Units.inchesToMeters(7),
-                            Units.inchesToMeters(22.5 - 7)),
-                    new Rotation3d(0, Math.toRadians(15), Math.toRadians(-90)));
+    Transform3d camTrans2 = new Transform3d(
+            new Translation3d(Units.inchesToMeters(-8), Units.inchesToMeters(7), Units.inchesToMeters(22.5 - 7)),
+            new Rotation3d(0, Math.toRadians(15), Math.toRadians(-90)));
 
     public final PhotonAprilTagSystem reefCam1;
 
@@ -86,11 +77,10 @@ public class RobotContainer {
 
     private final SendableChooser<Command> autoChooser;
 
-    private final SwerveRequest.FieldCentric drive =
-            new SwerveRequest.FieldCentric()
-                    .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
-                    .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
-                    .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
+            .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
+            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
     AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
     private final Mechanisms mechanisms;
@@ -100,8 +90,7 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
-        secondaryXboxController =
-                new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
+        secondaryXboxController = new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
 
         switch (Constants.CURRENT_MODE) {
@@ -119,11 +108,9 @@ public class RobotContainer {
             }
         }
 
-        grabberSubsystem = new GrabberSubsystem();
+        grabberSubsystem = new GrabberSubsystem(new GrabberIOTalonFX());
 
-        coralManipulator =
-                new CoralManipulatorSystem(
-                        arm, elevatorSubsystem, grabberSubsystem, new WristSubsystem());
+        coralManipulator = new CoralManipulatorSystem(arm, elevatorSubsystem, grabberSubsystem, new WristSubsystem());
 
         reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
         reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
@@ -146,14 +133,13 @@ public class RobotContainer {
 
         climber = new ClimberSubsystem();
         mechanisms = new Mechanisms();
-        alignToReefCmd =
-                new ReefAlignCommand(
-                        drivetrain,
-                        reefCam1,
-                        reefCam2,
-                        primaryXboxController::getLeftX,
-                        primaryXboxController::getLeftY,
-                        primaryXboxController::getRightX);
+        alignToReefCmd = new ReefAlignCommand(
+                drivetrain,
+                reefCam1,
+                reefCam2,
+                primaryXboxController::getLeftX,
+                primaryXboxController::getLeftY,
+                primaryXboxController::getRightX);
 
         configureBindings();
 
@@ -188,8 +174,7 @@ public class RobotContainer {
                 AprilTagPose pose = aprilTagPoseOpt.get();
 
                 if (pose.getNumTags() > 0) {
-                    drivetrain.addVisionMeasurement(
-                            pose.getEstimatedRobotPose(), pose.getTimestamp());
+                    drivetrain.addVisionMeasurement(pose.getEstimatedRobotPose(), pose.getTimestamp());
                 }
             }
         }
@@ -200,86 +185,57 @@ public class RobotContainer {
     //    }
 
     private void configureBindings() {
-        drivetrain.setDefaultCommand(
-                drivetrain.applyRequest(
-                        () ->
-                                drive.withVelocityX(
-                                                -primaryXboxController.getLeftY()
-                                                        * TunerConstants.kSpeedAt12Volts
-                                                                .magnitude())
-                                        .withVelocityY(
-                                                -primaryXboxController.getLeftX()
-                                                        * TunerConstants.kSpeedAt12Volts
-                                                                .magnitude())
-                                        .withRotationalRate(
-                                                -primaryXboxController.getRightX()
-                                                        * TunerConstants.MaFxAngularRate)));
+        drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(
+                        -primaryXboxController.getLeftY() * TunerConstants.kSpeedAt12Volts.magnitude())
+                .withVelocityY(-primaryXboxController.getLeftX() * TunerConstants.kSpeedAt12Volts.magnitude())
+                .withRotationalRate(-primaryXboxController.getRightX() * TunerConstants.MaFxAngularRate)));
         primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        primaryXboxController
-                .leftBumper()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
-        primaryXboxController
-                .rightBumper()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
-        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-        primaryXboxController
-                .x()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
-        secondaryXboxController
-                .a()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
-        secondaryXboxController
-                .b()
-                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
-        secondaryXboxController
-                .povUp()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
-        secondaryXboxController
-                .povRight()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
-        secondaryXboxController
-                .povDown()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
-        secondaryXboxController
-                .povLeft()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
-        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-
-        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
-        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
-        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
-        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-
-        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
-        secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));
-        secondaryXboxController.rightBumper().whileTrue(climber.spinClimber(climber.unClimbSpeed));
-        secondaryXboxController
-                .y()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
-
-        coralManipulator.grabber.hasCoralTrigger.onTrue(
-                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        //
+        // primaryXboxController.leftBumper().onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
+        //
+        // primaryXboxController.rightBumper().onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        //        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+        //        primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+        //        secondaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        //        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        //        secondaryXboxController.b().onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
+        //        secondaryXboxController.povUp().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
+        //        secondaryXboxController.povRight().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+        //        secondaryXboxController.povDown().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+        //        secondaryXboxController.povLeft().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        //        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
+        //        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+        //
+        //        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        //        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+        //        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+        //        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+        //        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        //
+        //        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        //        secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));
+        //        secondaryXboxController.rightBumper().whileTrue(climber.spinClimber(climber.unClimbSpeed));
+        //        secondaryXboxController.y().onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
+        //
+        //
+        // coralManipulator.grabber.hasCoralTrigger.onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
 
     public void updateMechanisms() {
-        mechanisms.publishComponentPoses(
-                coralManipulator.elevator.getCurrentPosition(),
-                coralManipulator.arm.getCurrentPosition(),
-                coralManipulator.wrist.getCurrentPosition(),
-                true);
-        mechanisms.publishComponentPoses(
-                coralManipulator.elevator.getTargetPosition(),
-                coralManipulator.arm.getTargetPosition(),
-                coralManipulator.wrist.getTargetPosition(),
-                false);
-
-        mechanisms.updateElevatorArmMech(
-                coralManipulator.elevator.getCurrentPosition(),
-                coralManipulator.arm.getCurrentPosition());
+        //        mechanisms.publishComponentPoses(
+        //                coralManipulator.elevator.getCurrentPosition(),
+        //                coralManipulator.arm.getCurrentPosition(),
+        //                coralManipulator.wrist.getCurrentPosition(),
+        //                true);
+        //        mechanisms.publishComponentPoses(
+        //                coralManipulator.elevator.getTargetPosition(),
+        //                coralManipulator.arm.getTargetPosition(),
+        //                coralManipulator.wrist.getTargetPosition(),
+        //                false);
+        //
+        //        mechanisms.updateElevatorArmMech(
+        //                coralManipulator.elevator.getCurrentPosition(), coralManipulator.arm.getCurrentPosition());
     }
 
     /**

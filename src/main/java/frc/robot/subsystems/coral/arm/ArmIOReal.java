@@ -70,10 +70,6 @@ public class ArmIOReal implements ArmIO {
     @Override
     public void updateInputs(ArmIOInputs inputs) {
         BaseStatusSignal.refreshAll(position, angularVel, appliedVolts, currentAmps);
-        inputs.updateAll(
-                position.getValue(),
-                angularVel.getValue(),
-                appliedVolts.getValue(),
-                currentAmps.getValue());
+        inputs.updateAll(position.getValue(), angularVel.getValue(), appliedVolts.getValue(), currentAmps.getValue());
     }
 }

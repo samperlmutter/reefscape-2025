@@ -1,6 +1,8 @@
 package frc.robot.subsystems.coral.grabber;
 
-public enum GrabberState {
+import frc.robot.util.State;
+
+public enum GrabberState implements State<Double> {
     ROLL_OUT(GrabberConfig.OUTSPIT),
     ROLL_IN(GrabberConfig.INTAKE),
     OFF(0);
@@ -11,7 +13,8 @@ public enum GrabberState {
         this.speed = speed;
     }
 
-    public double getSpeed() {
+    @Override
+    public Double get() {
         return speed;
     }
 }

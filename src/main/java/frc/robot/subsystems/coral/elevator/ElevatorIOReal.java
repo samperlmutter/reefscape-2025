@@ -17,28 +17,20 @@ import frc.robot.util.sim.PhysicsSim;
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorIOReal implements ElevatorIO {
-    private final TalonFX primaryElevatorMotor =
-            new TalonFX(ElevatorConfig.primaryElevatorMotorID, RIO_BUS);
-    private final TalonFX secondaryElevatorMotor =
-            new TalonFX(ElevatorConfig.secondaryElevatorMotorID, RIO_BUS);
+    private final TalonFX primaryElevatorMotor = new TalonFX(ElevatorConfig.primaryElevatorMotorID, RIO_BUS);
+    private final TalonFX secondaryElevatorMotor = new TalonFX(ElevatorConfig.secondaryElevatorMotorID, RIO_BUS);
     private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
 
     private final MotionMagicTorqueCurrentFOC magicRequest;
 
     private final StatusSignal<Angle> primaryPositionRot = primaryElevatorMotor.getPosition();
     private final StatusSignal<Angle> secondaryPositionRot = secondaryElevatorMotor.getPosition();
-    private final StatusSignal<AngularVelocity> primaryVelocityRotPerSec =
-            primaryElevatorMotor.getVelocity();
-    private final StatusSignal<AngularVelocity> secondaryVelocityRotPerSec =
-            secondaryElevatorMotor.getVelocity();
-    private final StatusSignal<Voltage> primaryAppliedVolts =
-            primaryElevatorMotor.getMotorVoltage();
-    private final StatusSignal<Voltage> secondaryAppliedVolts =
-            secondaryElevatorMotor.getMotorVoltage();
-    private final StatusSignal<Current> primaryCurrentAmps =
-            primaryElevatorMotor.getStatorCurrent();
-    private final StatusSignal<Current> secondaryCurrentAmps =
-            secondaryElevatorMotor.getSupplyCurrent();
+    private final StatusSignal<AngularVelocity> primaryVelocityRotPerSec = primaryElevatorMotor.getVelocity();
+    private final StatusSignal<AngularVelocity> secondaryVelocityRotPerSec = secondaryElevatorMotor.getVelocity();
+    private final StatusSignal<Voltage> primaryAppliedVolts = primaryElevatorMotor.getMotorVoltage();
+    private final StatusSignal<Voltage> secondaryAppliedVolts = secondaryElevatorMotor.getMotorVoltage();
+    private final StatusSignal<Current> primaryCurrentAmps = primaryElevatorMotor.getStatorCurrent();
+    private final StatusSignal<Current> secondaryCurrentAmps = secondaryElevatorMotor.getSupplyCurrent();
 
     public ElevatorIOReal(boolean isSim) {
         primaryElevatorMotor.getConfigurator().apply(ElevatorConfig.primaryTalonFXConfigs);
@@ -89,7 +81,8 @@ public class ElevatorIOReal implements ElevatorIO {
                 "Elevator/Target Velocity",
                 primaryElevatorMotor.getClosedLoopReferenceSlope().getValue());
         Logger.recordOutput(
-                "Elevator/Target Error", primaryElevatorMotor.getClosedLoopError().getValue());
+                "Elevator/Target Error",
+                primaryElevatorMotor.getClosedLoopError().getValue());
         Logger.recordOutput(
                 "Elevator/Closed Loop Output",
                 primaryElevatorMotor.getClosedLoopOutput().getValue());
@@ -104,7 +97,8 @@ public class ElevatorIOReal implements ElevatorIO {
                 primaryElevatorMotor.getClosedLoopDerivativeOutput().getValue());
         Logger.recordOutput(
                 "Elevator/Active Slot", primaryElevatorMotor.getClosedLoopSlot().getValue());
-        Logger.recordOutput("Elevator/Duty Cycle", primaryElevatorMotor.getDutyCycle().getValue());
+        Logger.recordOutput(
+                "Elevator/Duty Cycle", primaryElevatorMotor.getDutyCycle().getValue());
     }
 
     @Override

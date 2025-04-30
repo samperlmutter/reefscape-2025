@@ -24,8 +24,7 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
     private LimelightHelpers.LimelightTarget_Fiducial currentBestDetection;
     private double currentBestDetectionDistance = Double.POSITIVE_INFINITY;
 
-    public LimelightAprilTagSystem(
-            String limelightName, CommandSwerveDrivetrain commandSwerveDrivetrain) {
+    public LimelightAprilTagSystem(String limelightName, CommandSwerveDrivetrain commandSwerveDrivetrain) {
         this.commandSwerveDrivetrain = commandSwerveDrivetrain;
         this.limelightName = limelightName;
     }
@@ -38,18 +37,17 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
         double yaw = commandSwerveDrivetrain.getRotation3d().getAngle();
         LimelightHelpers.SetRobotOrientation(limelightName, yaw, 0, 0, 0, 0, 0);
         poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
-        LimelightHelpers.LimelightResults results =
-                LimelightHelpers.getLatestResults(limelightName);
+        LimelightHelpers.LimelightResults results = LimelightHelpers.getLatestResults(limelightName);
 
         if (!results.valid) {
             return;
         }
 
-        List<AprilTagDetection> aprilTagDetections =
-                new ArrayList<>(results.targets_Fiducials.length);
+        List<AprilTagDetection> aprilTagDetections = new ArrayList<>(results.targets_Fiducials.length);
 
         for (LimelightHelpers.LimelightTarget_Fiducial aprilTag : results.targets_Fiducials) {
-            double normDistance = aprilTag.getCameraPose_TargetSpace2D().getTranslation().getNorm();
+            double normDistance =
+                    aprilTag.getCameraPose_TargetSpace2D().getTranslation().getNorm();
 
             if (normDistance < currentBestDetectionDistance) {
                 currentBestDetection = aprilTag;
@@ -60,10 +58,7 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
         }
 
         aprilTagResults =
-                new AprilTagResults(
-                        results.timestamp_LIMELIGHT_publish,
-                        results.latency_pipeline,
-                        aprilTagDetections);
+                new AprilTagResults(results.timestamp_LIMELIGHT_publish, results.latency_pipeline, aprilTagDetections);
     }
 
     @Override
@@ -73,8 +68,7 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
 
     @Override
     public Optional<AprilTagPose> getEstimatedPose() {
-        return Optional.ofNullable(poseEstimate)
-                .map(e -> new AprilTagPose(e.pose, e.tagCount, e.timestampSeconds));
+        return Optional.ofNullable(poseEstimate).map(e -> new AprilTagPose(e.pose, e.tagCount, e.timestampSeconds));
     }
 
     @Override
@@ -109,15 +103,12 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
 
     private AprilTagDetection mapToDetection(LimelightHelpers.LimelightTarget_Fiducial aprilTag) {
         Pose3d robotPose = aprilTag.getRobotPose_FieldSpace();
-        Transform3d camTranform =
-                new Transform3d(
-                        new Translation3d(
-                                Units.inchesToMeters(-9.5), 0, Units.inchesToMeters(35.125)),
-                        new Rotation3d(0, 0, Math.toRadians(-180)));
-        Transform3d camToTarget =
-                new Transform3d(
-                        LimelightHelpers.getTargetPose3d_CameraSpace("limelight").getTranslation(),
-                        LimelightHelpers.getTargetPose3d_CameraSpace("limelight").getRotation());
+        Transform3d camTranform = new Transform3d(
+                new Translation3d(Units.inchesToMeters(-9.5), 0, Units.inchesToMeters(35.125)),
+                new Rotation3d(0, 0, Math.toRadians(-180)));
+        Transform3d camToTarget = new Transform3d(
+                LimelightHelpers.getTargetPose3d_CameraSpace("limelight").getTranslation(),
+                LimelightHelpers.getTargetPose3d_CameraSpace("limelight").getRotation());
         Pose3d targetPose = robotPose.transformBy(camTranform).transformBy(camToTarget);
         return new AprilTagDetection(
                 (int) aprilTag.fiducialID,

@@ -6,17 +6,9 @@ import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.coral.wrist.WristPositions;
 
 public enum CoralManipulatorState {
-    GROUND_INTAKE(
-            ArmPosition.GROUND,
-            ElevatorPosition.BOTTOM,
-            GrabberState.ROLL_IN,
-            WristPositions.UNSAFE),
+    GROUND_INTAKE(ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.ROLL_IN, WristPositions.UNSAFE),
     L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.OFF, WristPositions.UNSAFE),
-    SCORE_L1(
-            ArmPosition.POS_L1,
-            ElevatorPosition.POS_L1,
-            GrabberState.ROLL_OUT,
-            WristPositions.UNSAFE),
+    SCORE_L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.ROLL_OUT, WristPositions.UNSAFE),
     L2(ArmPosition.POS_L2, ElevatorPosition.POS_L2, GrabberState.OFF, WristPositions.SAFE),
     SCORE_L2(ArmPosition.SCORE_L2, ElevatorPosition.POS_L2, GrabberState.OFF, WristPositions.SAFE),
     L3(ArmPosition.POS_L3, ElevatorPosition.SAFE_POSITION, GrabberState.OFF, WristPositions.SAFE),
@@ -26,11 +18,7 @@ public enum CoralManipulatorState {
     HP_INTAKE(ArmPosition.HP, ElevatorPosition.BOTTOM, GrabberState.ROLL_IN, WristPositions.UNSAFE),
     STOWED(ArmPosition.UP, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
     CLIMB(ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
-    ALGAEHIGH(
-            ArmPosition.POS_L3,
-            ElevatorPosition.POS_L3,
-            GrabberState.ROLL_IN,
-            WristPositions.UNSAFE),
+    ALGAEHIGH(ArmPosition.POS_L3, ElevatorPosition.POS_L3, GrabberState.ROLL_IN, WristPositions.UNSAFE),
     IDLE(ArmPosition.HOLD, ElevatorPosition.HOLD, GrabberState.OFF, WristPositions.SAFE);
 
     private final ArmPosition armPosition;

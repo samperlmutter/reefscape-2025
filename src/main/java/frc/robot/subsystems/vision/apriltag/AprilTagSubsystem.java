@@ -31,7 +31,8 @@ public interface AprilTagSubsystem {
         if (optResults.isEmpty()) return Collections.emptyList();
 
         AprilTagResults results = optResults.get();
-        List<AprilTagDetection> detections = new ArrayList<>(results.getResults().size());
+        List<AprilTagDetection> detections =
+                new ArrayList<>(results.getResults().size());
 
         for (AprilTagDetection tag : results.getResults()) {
             for (int id : ids) {

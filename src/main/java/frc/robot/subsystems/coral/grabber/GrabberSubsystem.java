@@ -1,48 +1,44 @@
 package frc.robot.subsystems.coral.grabber;
 
-import static frc.robot.constants.Constants.RIO_BUS;
-
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.reduxrobotics.sensors.canandcolor.Canandcolor;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.util.state.StatefulSubsystem;
+import frc.robot.util.MotionMagicControl;
+import frc.robot.util.State;
 
-public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
-    private final TalonFX claw = new TalonFX(GrabberConfig.CLAW_ID, RIO_BUS);
-    private final DutyCycleOut dutyCycleReq = new DutyCycleOut(0);
+import static frc.robot.subsystems.coral.grabber.GrabberState.OFF;
+import static frc.robot.subsystems.coral.grabber.GrabberState.ROLL_OUT;
+
+public class GrabberSubsystem extends SubsystemBase implements MotionMagicControl {
     public final Trigger hasCoralTrigger;
+    private final GrabberIO io;
+    private final GrabberIOInputsAutoLogged inputs = new GrabberIOInputsAutoLogged();
+    private final GrabberState currentState;
 
-    private final Canandcolor clawSwitch = new Canandcolor(GrabberConfig.GRABBER_CANANDCOLOR);
-
-    public GrabberSubsystem() {
-        super(GrabberState.OFF);
-        claw.getConfigurator().apply(GrabberConfig.coralMotorConfig);
-
-        new Trigger(this::hasCoral).onTrue(transitionTo(GrabberState.OFF));
-        new Trigger(() -> getCurrentState() == GrabberState.ROLL_OUT)
-                .debounce(1)
-                .onTrue(transitionTo(GrabberState.OFF));
-        hasCoralTrigger = new Trigger(this::hasCoral);
+    public GrabberSubsystem(GrabberIO io) {
+        this.io = io;
+        currentState = OFF;
+        hasCoralTrigger = new Trigger(() -> inputs.hasCoral).onTrue(moveTo(OFF));
+        new Trigger(() -> currentState == ROLL_OUT).debounce(1).onTrue(moveTo(OFF));
     }
 
     @Override
-    public StatusCode initializeTransition(GrabberState targetState) {
-        return claw.setControl(dutyCycleReq.withOutput(targetState.getSpeed()));
+    public Command moveTo(State setpoint) {
+        return switch ((GrabberState) setpoint) {
+            case OFF -> runOnce(io::stop);
+            case ROLL_IN -> runOnce(io::rollIn);
+            case ROLL_OUT -> runOnce(io::rollOut);
+        };
     }
 
-    // we assume that the transition to other states is (near) instantaneous
     @Override
-    protected boolean isTransitionFinished() {
-        return true;
+    public Angle currentPosition() {
+        return null;
     }
 
-    public boolean hasCoral() {
-        return clawSwitch.getProximity() < 0.05;
-    }
-
-    public boolean doesNotHaveCoral() {
-        return clawSwitch.getProximity() > 0.21;
+    @Override
+    public boolean hasReachedGoal() {
+        return false;
     }
 }
