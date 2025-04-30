@@ -36,7 +36,7 @@ public class ElevatorSubsystem extends StatefulSubsystem<ElevatorPosition> imple
 
     @Override
     public Command moveTo(State<Angle> setpoint) {
-        return runOnce(() -> io.moveTo(setpoint.get()));
+        return run(() -> io.moveTo(setpoint.get())).until(this::hasReachedGoal);
     }
 
     @Override

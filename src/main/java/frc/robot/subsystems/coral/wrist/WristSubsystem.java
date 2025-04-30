@@ -25,7 +25,7 @@ public class WristSubsystem extends StatefulSubsystem<WristPositions> implements
 
     @Override
     public Command moveTo(State<Angle> setpoint) {
-        return runOnce(() -> io.moveTo(setpoint.get()));
+        return run(() -> io.moveTo(setpoint.get())).until(this::hasReachedGoal);
     }
 
     @Override
