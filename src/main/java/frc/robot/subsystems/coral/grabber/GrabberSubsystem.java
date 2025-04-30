@@ -1,14 +1,14 @@
 package frc.robot.subsystems.coral.grabber;
 
+import static frc.robot.subsystems.coral.grabber.GrabberState.OFF;
+import static frc.robot.subsystems.coral.grabber.GrabberState.ROLL_OUT;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.util.MotionMagicControl;
 import frc.robot.util.State;
-
-import static frc.robot.subsystems.coral.grabber.GrabberState.OFF;
-import static frc.robot.subsystems.coral.grabber.GrabberState.ROLL_OUT;
 
 public class GrabberSubsystem extends SubsystemBase implements MotionMagicControl {
     public final Trigger hasCoralTrigger;

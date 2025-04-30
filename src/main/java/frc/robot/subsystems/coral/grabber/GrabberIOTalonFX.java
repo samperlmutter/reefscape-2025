@@ -4,6 +4,8 @@ import static frc.robot.constants.Constants.RIO_BUS;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
+import frc.robot.Robot;
+import frc.robot.util.sim.PhysicsSim;
 
 public class GrabberIOTalonFX implements GrabberIO {
     private final TalonFX claw;
@@ -13,6 +15,10 @@ public class GrabberIOTalonFX implements GrabberIO {
         clawSwitch = new Canandcolor(GrabberConfig.GRABBER_CANANDCOLOR);
         claw = new TalonFX(GrabberConfig.CLAW_ID, RIO_BUS);
         claw.getConfigurator().apply(GrabberConfig.coralMotorConfig);
+
+        if (Robot.isSimulation()) {
+            PhysicsSim.getInstance().addTalonFX(claw);
+        }
     }
 
     @Override

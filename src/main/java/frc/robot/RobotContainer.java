@@ -32,6 +32,7 @@ import frc.robot.subsystems.coral.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.coral.grabber.GrabberIOTalonFX;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
+import frc.robot.subsystems.coral.wrist.WristIOTalonFX;
 import frc.robot.subsystems.coral.wrist.WristSubsystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
@@ -106,7 +107,8 @@ public class RobotContainer {
 
         grabberSubsystem = new GrabberSubsystem(new GrabberIOTalonFX());
 
-        coralManipulator = new CoralManipulatorSystem(arm, elevatorSubsystem, grabberSubsystem, new WristSubsystem());
+        coralManipulator = new CoralManipulatorSystem(
+                arm, elevatorSubsystem, grabberSubsystem, new WristSubsystem(new WristIOTalonFX()));
 
         reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
         reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
