@@ -1,15 +1,13 @@
 package frc.robot.subsystems.coral.grabber;
 
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
+import static frc.robot.subsystems.coral.grabber.GrabberState.OFF;
+import static frc.robot.subsystems.coral.grabber.GrabberState.ROLL_OUT;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.util.control.State;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.subsystems.coral.grabber.GrabberState.OFF;
-import static frc.robot.subsystems.coral.grabber.GrabberState.ROLL_OUT;
 
 public class GrabberSubsystem extends SubsystemBase {
     public final Trigger hasCoralTrigger;
@@ -37,5 +35,4 @@ public class GrabberSubsystem extends SubsystemBase {
             case ROLL_OUT -> runOnce(io::rollOut);
         };
     }
-
 }

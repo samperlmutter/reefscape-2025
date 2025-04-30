@@ -13,7 +13,6 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.util.sim.PhysicsSim;
-import org.littletonrobotics.junction.AutoLogOutput;
 
 public class ArmIOTalonFX implements ArmIO {
     private final TalonFX armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
