@@ -23,6 +23,7 @@ import frc.robot.commands.AutoNamedCommands;
 import frc.robot.commands.ReefAlignCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.coral.arm.ArmIO;
 import frc.robot.subsystems.coral.arm.ArmIOTalonFX;
@@ -31,6 +32,7 @@ import frc.robot.subsystems.coral.elevator.ElevatorIO;
 import frc.robot.subsystems.coral.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.coral.grabber.GrabberIOTalonFX;
+import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
 import frc.robot.subsystems.coral.wrist.WristIOTalonFX;
 import frc.robot.subsystems.coral.wrist.WristSubsystem;
@@ -108,7 +110,7 @@ public class RobotContainer {
         grabberSubsystem = new GrabberSubsystem(new GrabberIOTalonFX());
 
         coralManipulator = new CoralManipulatorSystem(
-                arm, elevatorSubsystem, grabberSubsystem, new WristSubsystem(new WristIOTalonFX()));
+                elevatorSubsystem, arm, grabberSubsystem, new WristSubsystem(new WristIOTalonFX()));
 
         reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
         reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
@@ -189,35 +191,30 @@ public class RobotContainer {
                 .withRotationalRate(-primaryXboxController.getRightX() * TunerConstants.MaFxAngularRate)));
         primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        //
-        // primaryXboxController.leftBumper().onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
-        //
-        // primaryXboxController.rightBumper().onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
-        //        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-        //        primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
-        //        secondaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        //        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
-        //        secondaryXboxController.b().onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
-        //        secondaryXboxController.povUp().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
-        //        secondaryXboxController.povRight().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
-        //        secondaryXboxController.povDown().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
-        //        secondaryXboxController.povLeft().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        //        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
-        //        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-        //
-        //        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-        //        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
-        //        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
-        //        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
-        //        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        //
-        //        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
-        //        secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));
-        //        secondaryXboxController.rightBumper().whileTrue(climber.spinClimber(climber.unClimbSpeed));
-        //        secondaryXboxController.y().onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
-        //
-        //
-        // coralManipulator.grabber.hasCoralTrigger.onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
+         primaryXboxController.leftBumper().onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
+
+         primaryXboxController.rightBumper().onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+                primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+                primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+                secondaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+                secondaryXboxController.b().onTrue(coralManipulator.releaseCoral());
+                secondaryXboxController.povUp().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
+                secondaryXboxController.povRight().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+                secondaryXboxController.povDown().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+                secondaryXboxController.povLeft().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+                primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
+                primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+
+                simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+                simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+                simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+                simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+                simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
+                secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));
+                secondaryXboxController.rightBumper().whileTrue(climber.spinClimber(climber.unClimbSpeed));
+                secondaryXboxController.y().onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
     }
 
     public void updateMechanisms() {

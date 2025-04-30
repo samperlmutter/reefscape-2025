@@ -1,37 +1,46 @@
 package frc.robot.subsystems.coral;
 
 import com.ctre.phoenix6.StatusCode;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
 import frc.robot.subsystems.coral.wrist.WristPositions;
 import frc.robot.subsystems.coral.wrist.WristSubsystem;
 
+import java.util.Map;
+import java.util.Set;
+
 public class CoralManipulatorSystem extends SubsystemBase {
-    public final ArmSubsystem arm;
-
-    public final ElevatorSubsystem elevator;
-
-    public final WristSubsystem wrist;
-    public final GrabberSubsystem grabber;
+    private final ElevatorSubsystem elevator;
+    private final ArmSubsystem arm;
+    private final WristSubsystem wrist;
+    private final GrabberSubsystem grabber;
 
     private CoralManipulatorState queuedState = CoralManipulatorState.IDLE;
     private CoralManipulatorState currentState, wantedState;
 
     public CoralManipulatorSystem(
-            ArmSubsystem arm, ElevatorSubsystem elevator, GrabberSubsystem grabber, WristSubsystem wristSubsystem) {
+            ElevatorSubsystem elevator, ArmSubsystem arm, GrabberSubsystem grabber, WristSubsystem wristSubsystem) {
         this.arm = arm;
         this.elevator = elevator;
         this.grabber = grabber;
         this.wrist = wristSubsystem;
         currentState = CoralManipulatorState.IDLE;
         wantedState = CoralManipulatorState.IDLE;
+
+        grabber.hasCoralTrigger.onTrue(transitionTo(CoralManipulatorState.STOWED));
     }
+
+    private Command expose(Command internal) {
+        var internalProxy = internal.asProxy();
+        internalProxy.addRequirements(this);
+        return internalProxy;
+    }
+
 
     private CoralManipulatorState getQueuedState() {
         return queuedState;
@@ -41,35 +50,35 @@ public class CoralManipulatorSystem extends SubsystemBase {
         queuedState = state;
     }
 
-    //    public Command selectQueuedStateCommand() {
-    //        return new SelectCommand(
-    //                Map.of(
-    //                        CoralManipulatorState.L1, transitionTo(CoralManipulatorState.L1),
-    //                        CoralManipulatorState.L2, transitionTo(CoralManipulatorState.L2),
-    //                        CoralManipulatorState.L3, transitionTo(CoralManipulatorState.L3),
-    //                        CoralManipulatorState.L4, transitionTo(CoralManipulatorState.L4)),
-    //                this::getQueuedState);
-    //    }
-    //
-    //    public Command scoreState() {
-    //        return new SelectCommand(
-    //                Map.of(
-    //                        CoralManipulatorState.L1, transitionTo(CoralManipulatorState.SCORE_L1),
-    //                        CoralManipulatorState.L2, transitionTo(CoralManipulatorState.SCORE_L2),
-    //                        CoralManipulatorState.L3, transitionTo(CoralManipulatorState.SCORE_L3),
-    //                        CoralManipulatorState.L4, transitionTo(CoralManipulatorState.SCORE_L4)),
-    //                this::getQueuedState);
-    //    }
+        public Command selectQueuedStateCommand() {
+            return new SelectCommand(
+                    Map.of(
+                            CoralManipulatorState.L1, transitionTo(CoralManipulatorState.L1),
+                            CoralManipulatorState.L2, transitionTo(CoralManipulatorState.L2),
+                            CoralManipulatorState.L3, transitionTo(CoralManipulatorState.L3),
+                            CoralManipulatorState.L4, transitionTo(CoralManipulatorState.L4)),
+                    this::getQueuedState);
+        }
+
+        public Command scoreState() {
+            return new SelectCommand(
+                    Map.of(
+                            CoralManipulatorState.L1, transitionTo(CoralManipulatorState.SCORE_L1),
+                            CoralManipulatorState.L2, transitionTo(CoralManipulatorState.SCORE_L2),
+                            CoralManipulatorState.L3, transitionTo(CoralManipulatorState.SCORE_L3),
+                            CoralManipulatorState.L4, transitionTo(CoralManipulatorState.SCORE_L4)),
+                    this::getQueuedState);
+        }
 
     public Command setQueueState(CoralManipulatorState queuedState) {
         return runOnce(() -> queueState(queuedState));
     }
 
-    public Command transitionTo(CoralManipulatorState state) {
-        return Commands.none();
+    public Command transitionTo(CoralManipulatorState targetState) {
+        return Commands.defer(() -> moveTo(targetState), Set.of(this));
     }
 
-    protected StatusCode initializeTransition(CoralManipulatorState targetState) {
+    private Command moveTo(CoralManipulatorState targetState) {
         wantedState = targetState;
         Command coralManipulatorCommand;
 
@@ -106,9 +115,11 @@ public class CoralManipulatorSystem extends SubsystemBase {
             coralManipulatorCommand = coralManipulatorCommand.andThen(wrist.moveTo(targetState.getWristPosition()));
         }
 
-        coralManipulatorCommand.finallyDo(() -> currentState = wantedState).schedule();
+        return expose(coralManipulatorCommand.finallyDo(() -> currentState = wantedState));
+    }
 
-        return StatusCode.OK;
+    public Command releaseCoral() {
+        return expose(grabber.moveTo(GrabberState.ROLL_OUT));
     }
 
     private boolean isElevatorGoingSafety() {
