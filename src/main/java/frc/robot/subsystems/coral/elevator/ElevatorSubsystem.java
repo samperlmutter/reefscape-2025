@@ -4,11 +4,12 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.util.MotionMagicControl;
-import frc.robot.util.State;
+import frc.robot.util.control.MotionMagicControl;
+import frc.robot.util.control.State;
+import frc.robot.util.control.StatefulSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-public class ElevatorSubsystem extends SubsystemBase implements MotionMagicControl {
+public class ElevatorSubsystem extends StatefulSubsystem<ElevatorPosition> implements MotionMagicControl {
     ElevatorIO io;
     ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
@@ -19,6 +20,7 @@ public class ElevatorSubsystem extends SubsystemBase implements MotionMagicContr
                 .debounce(2)
                 .onTrue(runOnce(io::zeroPosition).andThen(runOnce(io::setNeutral)))
                 .getAsBoolean();
+        setDefaultCommand(runOnce(io::holdPosition));
     }
 
     @Override
@@ -39,6 +41,6 @@ public class ElevatorSubsystem extends SubsystemBase implements MotionMagicContr
 
     @Override
     public boolean hasReachedGoal() {
-        return false;
+        return currentPosition().isNear(getTargetState().get(), ElevatorConfig.HEIGHT_TOLERANCE);
     }
 }

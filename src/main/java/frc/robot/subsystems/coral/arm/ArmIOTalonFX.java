@@ -46,4 +46,9 @@ public class ArmIOTalonFX implements ArmIO {
         BaseStatusSignal.refreshAll(position, angularVel, appliedVolts, currentAmps);
         inputs.updateAll(position.getValue(), angularVel.getValue(), appliedVolts.getValue(), currentAmps.getValue());
     }
+
+    @Override
+    public StatusCode holdPosition() {
+        return armKraken.setControl(magicRequest.withPosition(position.getValue()));
+    }
 }

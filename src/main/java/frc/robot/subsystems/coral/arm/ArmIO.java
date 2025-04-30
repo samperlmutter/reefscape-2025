@@ -30,4 +30,8 @@ public interface ArmIO {
     default StatusCode moveTo(Angle setpoint) {
         return StatusCode.OK;
     }
+
+    default StatusCode holdPosition() {
+        return StatusCode.OK;
+    }
 }

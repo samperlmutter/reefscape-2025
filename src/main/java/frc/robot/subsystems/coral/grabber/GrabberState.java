@@ -1,6 +1,6 @@
 package frc.robot.subsystems.coral.grabber;
 
-import frc.robot.util.State;
+import frc.robot.util.control.State;
 
 public enum GrabberState implements State<Double> {
     ROLL_OUT(GrabberConfig.OUTSPIT),

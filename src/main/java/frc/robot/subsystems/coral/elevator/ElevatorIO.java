@@ -52,4 +52,8 @@ public interface ElevatorIO {
     default void setNeutral() {}
 
     default void zeroPosition() {}
+
+    default StatusCode holdPosition() {
+        return StatusCode.OK;
+    }
 }

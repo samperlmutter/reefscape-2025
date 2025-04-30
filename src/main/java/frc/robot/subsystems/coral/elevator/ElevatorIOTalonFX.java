@@ -74,32 +74,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
                 primaryCurrentAmps.getValue(),
                 secondaryCurrentAmps.getValue(),
                 isAtBottom());
-
-        Logger.recordOutput(
-                "Elevator/Target Position",
-                primaryElevatorMotor.getClosedLoopReference().getValue());
-        Logger.recordOutput(
-                "Elevator/Target Velocity",
-                primaryElevatorMotor.getClosedLoopReferenceSlope().getValue());
-        Logger.recordOutput(
-                "Elevator/Target Error",
-                primaryElevatorMotor.getClosedLoopError().getValue());
-        Logger.recordOutput(
-                "Elevator/Closed Loop Output",
-                primaryElevatorMotor.getClosedLoopOutput().getValue());
-        Logger.recordOutput(
-                "Elevator/Closed Loop P Output",
-                primaryElevatorMotor.getClosedLoopProportionalOutput().getValue());
-        Logger.recordOutput(
-                "Elevator/Closed Loop I Output",
-                primaryElevatorMotor.getClosedLoopIntegratedOutput().getValue());
-        Logger.recordOutput(
-                "Elevator/Closed Loop D Output",
-                primaryElevatorMotor.getClosedLoopDerivativeOutput().getValue());
-        Logger.recordOutput(
-                "Elevator/Active Slot", primaryElevatorMotor.getClosedLoopSlot().getValue());
-        Logger.recordOutput(
-                "Elevator/Duty Cycle", primaryElevatorMotor.getDutyCycle().getValue());
     }
 
     @Override
@@ -111,5 +85,10 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     public void zeroPosition() {
         primaryElevatorMotor.setPosition(0);
         secondaryElevatorMotor.setPosition(0);
+    }
+
+    @Override
+    public StatusCode holdPosition() {
+        return primaryElevatorMotor.setControl(magicRequest.withPosition(primaryPositionRot.getValue()));
     }
 }

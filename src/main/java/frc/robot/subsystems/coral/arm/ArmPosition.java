@@ -2,7 +2,7 @@ package frc.robot.subsystems.coral.arm;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
-import frc.robot.util.State;
+import frc.robot.util.control.State;
 
 public enum ArmPosition implements State<Angle> {
     DOWN(-0.254),
