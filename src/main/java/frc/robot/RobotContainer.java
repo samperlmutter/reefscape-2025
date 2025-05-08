@@ -219,19 +219,18 @@ public class RobotContainer {
     }
 
     public void updateMechanisms() {
-        //        mechanisms.publishComponentPoses(
-        //                coralManipulator.elevator.getCurrentPosition(),
-        //                coralManipulator.arm.getCurrentPosition(),
-        //                coralManipulator.wrist.getCurrentPosition(),
-        //                true);
-        //        mechanisms.publishComponentPoses(
-        //                coralManipulator.elevator.getTargetPosition(),
-        //                coralManipulator.arm.getTargetPosition(),
-        //                coralManipulator.wrist.getTargetPosition(),
-        //                false);
-        //
-        //        mechanisms.updateElevatorArmMech(
-        //                coralManipulator.elevator.getCurrentPosition(), coralManipulator.arm.getCurrentPosition());
+        mechanisms.publishComponentPoses(
+                coralManipulator.getElevatorPosition(),
+                coralManipulator.getArmPosition(),
+                coralManipulator.getWristPosition(),
+                true);
+        //                mechanisms.publishComponentPoses(
+        //                        coralManipulator.elevator.getTargetPosition(),
+        //                        coralManipulator.arm.getTargetPosition(),
+        //                        coralManipulator.wrist.getTargetPosition(),
+        //                        false);
+
+        mechanisms.updateElevatorArmMech(coralManipulator.getElevatorPosition(), coralManipulator.getArmPosition());
     }
 
     /**

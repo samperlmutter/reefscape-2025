@@ -1,5 +1,6 @@
 package frc.robot.subsystems.coral;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
@@ -131,5 +132,17 @@ public class CoralManipulatorSystem extends SubsystemBase {
     public boolean isWristFirst(CoralManipulatorState targetState) {
         return currentState.getWristPosition() == WristPositions.UNSAFE
                 || targetState.getWristPosition() == WristPositions.SAFE;
+    }
+
+    public Angle getArmPosition() {
+        return arm.currentPosition();
+    }
+
+    public Angle getElevatorPosition() {
+        return elevator.currentPosition();
+    }
+
+    public Angle getWristPosition() {
+        return wrist.currentPosition();
     }
 }
