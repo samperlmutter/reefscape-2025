@@ -9,7 +9,7 @@ class ArmConfig {
     static final int ARM_KRAKEN_ID = 10;
     static final int ARM_CANCODER_ID = 0;
 
-    static final double MAGNET_OFFSET = -0.326904296875;
+    static final double MAGNET_OFFSET = -0.496826171875;
     static final double GEAR_RATIO = 75.6055;
 
     static final double ARM_DEPLOY_LOWER_BOUND = 0;
@@ -19,8 +19,8 @@ class ArmConfig {
             .withKI(0)
             .withKD(350)
             .withKG(10)
-            .withKV(2)
-            .withKA(4)
+            .withKV(8)
+            .withKA(12)
             .withGravityType(GravityTypeValue.Arm_Cosine);
 
     static final Slot1Configs SLOT_1_WOOD_CONFIGS = new Slot1Configs()
