@@ -4,8 +4,9 @@ import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.coral.wrist.WristPositions;
+import frc.robot.util.control.State;
 
-public enum CoralManipulatorState {
+public enum CoralManipulatorState implements State<Object> {
     GROUND_INTAKE(ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.ROLL_IN, WristPositions.UNSAFE),
     L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.OFF, WristPositions.UNSAFE),
     SCORE_L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.ROLL_OUT, WristPositions.UNSAFE),
@@ -51,5 +52,10 @@ public enum CoralManipulatorState {
 
     public WristPositions getWristPosition() {
         return wristPosition;
+    }
+
+    @Override
+    public Object get() {
+        return null;
     }
 }

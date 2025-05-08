@@ -15,6 +15,7 @@ public class StatefulSetpointSubsystem<S extends State<Angle>, I extends MotionM
         this.tolerance = tolerance;
     }
 
+    @Override
     public Command moveTo(S setpoint) {
         return Commands.sequence(
                 Commands.sequence(

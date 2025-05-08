@@ -4,12 +4,11 @@ import static frc.robot.subsystems.coral.grabber.GrabberState.OFF;
 import static frc.robot.subsystems.coral.grabber.GrabberState.ROLL_OUT;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.util.control.State;
+import frc.robot.util.control.StatefulSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-public class GrabberSubsystem extends SubsystemBase {
+public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     public final Trigger hasCoralTrigger;
     private final GrabberIO io;
     private final GrabberIOInputsAutoLogged inputs = new GrabberIOInputsAutoLogged();
@@ -28,8 +27,9 @@ public class GrabberSubsystem extends SubsystemBase {
         Logger.processInputs("Grabber", inputs);
     }
 
-    public Command moveTo(State setpoint) {
-        return switch ((GrabberState) setpoint) {
+    @Override
+    public Command moveTo(GrabberState setpoint) {
+        return switch (setpoint) {
             case OFF -> runOnce(io::stop);
             case ROLL_IN -> runOnce(io::rollIn);
             case ROLL_OUT -> runOnce(io::rollOut);
