@@ -1,12 +1,15 @@
 package frc.robot.util.control;
 
+import com.ctre.phoenix6.StatusCode;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj2.command.Command;
 
-public interface MotionMagicControl {
-    Command moveTo(State<Angle> setpoint);
+public interface MotionMagicControl<S extends State<?>> {
+    default StatusCode moveTo(Angle setpoint) {
+        return StatusCode.OK;
+    }
 
-    Angle currentPosition();
-
-    boolean hasReachedGoal();
+    default Angle currentPosition() {
+        return Units.Rotations.zero();
+    }
 }

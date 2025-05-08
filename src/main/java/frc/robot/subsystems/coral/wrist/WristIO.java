@@ -1,14 +1,14 @@
 package frc.robot.subsystems.coral.wrist;
 
-import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.util.control.MotionMagicControl;
 import org.littletonrobotics.junction.AutoLog;
 
-public interface WristIO {
+public interface WristIO extends MotionMagicControl<WristPositions> {
     @AutoLog
     public static class WristIOInputs {
         public Angle positionRot = Units.Rotations.of(0.0);
@@ -26,12 +26,4 @@ public interface WristIO {
     }
 
     default void updateInputs(WristIOInputs inputs) {}
-
-    default StatusCode holdPosition() {
-        return StatusCode.OK;
-    }
-
-    default StatusCode moveTo(Angle setpoint) {
-        return StatusCode.OK;
-    }
 }

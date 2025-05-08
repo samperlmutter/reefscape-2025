@@ -85,9 +85,4 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         primaryElevatorMotor.setPosition(0);
         secondaryElevatorMotor.setPosition(0);
     }
-
-    @Override
-    public StatusCode holdPosition() {
-        return primaryElevatorMotor.setControl(magicRequest.withPosition(primaryPositionRot.getValue()));
-    }
 }

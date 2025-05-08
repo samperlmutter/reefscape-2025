@@ -72,6 +72,7 @@ public class RobotContainer {
 
     public final ArmSubsystem arm;
     final ElevatorSubsystem elevatorSubsystem;
+    final WristSubsystem wrist;
     final GrabberSubsystem grabberSubsystem;
     final CoralManipulatorSystem coralManipulator;
 
@@ -99,17 +100,18 @@ public class RobotContainer {
             case REAL, SIM -> {
                 arm = new ArmSubsystem(new ArmIOTalonFX());
                 elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
+                wrist = new WristSubsystem(new WristIOTalonFX());
+                grabberSubsystem = new GrabberSubsystem(new GrabberIOTalonFX());
             }
             default -> {
                 arm = new ArmSubsystem(new ArmIO() {});
                 elevatorSubsystem = new ElevatorSubsystem(new ElevatorIO() {});
+                wrist = new WristSubsystem(new WristIO() {});
+                grabberSubsystem = new GrabberSubsystem(new GrabberIO() {});
             }
         }
 
-        grabberSubsystem = new GrabberSubsystem(new GrabberIOTalonFX());
-
-        coralManipulator = new CoralManipulatorSystem(
-                elevatorSubsystem, arm, grabberSubsystem, new WristSubsystem(new WristIOTalonFX()));
+        coralManipulator = new CoralManipulatorSystem(elevatorSubsystem, arm, grabberSubsystem, wrist);
 
         reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
         reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
@@ -204,6 +206,7 @@ public class RobotContainer {
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
 
+        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
         simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
         simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
         simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));

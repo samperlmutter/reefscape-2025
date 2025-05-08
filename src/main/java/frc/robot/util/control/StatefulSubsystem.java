@@ -1,25 +1,26 @@
 package frc.robot.util.control;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.Optional;
 
 public class StatefulSubsystem<S extends State<?>> extends SubsystemBase {
-    private S currentState, targetState;
+    private Optional<S> currentState, targetState;
 
     public StatefulSubsystem() {}
 
-    public S getCurrentState() {
+    public Optional<S> getCurrentState() {
         return currentState;
     }
 
-    public void setCurrentState(S currentState) {
+    public void setCurrentState(Optional<S> currentState) {
         this.currentState = currentState;
     }
 
-    public S getTargetState() {
+    public Optional<S> getTargetState() {
         return targetState;
     }
 
-    public void setTargetState(S targetState) {
+    public void setTargetState(Optional<S> targetState) {
         this.targetState = targetState;
     }
 }

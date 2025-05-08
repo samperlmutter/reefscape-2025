@@ -1,19 +1,16 @@
 package frc.robot.subsystems.coral.arm;
 
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.util.control.MotionMagicControl;
-import frc.robot.util.control.State;
-import frc.robot.util.control.StatefulSubsystem;
+import frc.robot.util.control.StatefulSetpointSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-public class ArmSubsystem extends StatefulSubsystem<ArmPosition> implements MotionMagicControl {
-    ArmIO io;
-    ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
+public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, ArmIO> {
+    private final ArmIO io;
+    private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
 
     public ArmSubsystem(ArmIO io) {
+        super(io, ArmConfig.ANGLE_TOLERANCE);
         this.io = io;
-        setDefaultCommand(runOnce(io::holdPosition));
     }
 
     @Override
@@ -22,18 +19,7 @@ public class ArmSubsystem extends StatefulSubsystem<ArmPosition> implements Moti
         Logger.processInputs("Arm", inputs);
     }
 
-    @Override
-    public Command moveTo(State<Angle> setpoint) {
-        return run(() -> io.moveTo(setpoint.get())).until(this::hasReachedGoal);
-    }
-
-    @Override
     public Angle currentPosition() {
         return inputs.positionRot;
-    }
-
-    @Override
-    public boolean hasReachedGoal() {
-        return currentPosition().isNear(getTargetState().get(), ArmConfig.ANGLE_TOLERANCE);
     }
 }

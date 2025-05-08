@@ -1,14 +1,14 @@
 package frc.robot.subsystems.coral.elevator;
 
-import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.util.control.MotionMagicControl;
 import org.littletonrobotics.junction.AutoLog;
 
-public interface ElevatorIO {
+public interface ElevatorIO extends MotionMagicControl<ElevatorPosition> {
     @AutoLog
     public static class ElevatorIOInputs {
         public Angle primaryPositionRot = Units.Rotations.of(0);
@@ -45,15 +45,7 @@ public interface ElevatorIO {
 
     default void updateInputs(ElevatorIOInputs inputs) {}
 
-    default StatusCode moveTo(Angle setpoint) {
-        return StatusCode.OK;
-    }
-
     default void setNeutral() {}
 
     default void zeroPosition() {}
-
-    default StatusCode holdPosition() {
-        return StatusCode.OK;
-    }
 }

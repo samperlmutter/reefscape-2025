@@ -8,7 +8,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.Constants;
+import frc.robot.util.control.StatefulSetpointSubsystem;
 import frc.robot.util.sim.PhysicsSim;
+import java.util.Optional;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -68,6 +70,14 @@ public class Robot extends LoggedRobot {
         Logger.start();
 
         robotContainer = new RobotContainer();
+
+        CommandScheduler.getInstance().onCommandInterrupt(c -> c.getRequirements().stream()
+                .filter(r -> r instanceof StatefulSetpointSubsystem)
+                .forEach(s -> {
+                    ((StatefulSetpointSubsystem<?, ?>) s).holdPosition();
+                    ((StatefulSetpointSubsystem<?, ?>) s).setCurrentState(Optional.empty());
+                    ((StatefulSetpointSubsystem<?, ?>) s).setTargetState(Optional.empty());
+                }));
     }
 
     /**

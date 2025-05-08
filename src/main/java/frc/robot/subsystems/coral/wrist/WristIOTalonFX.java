@@ -27,13 +27,16 @@ public class WristIOTalonFX implements WristIO {
     }
 
     @Override
-    public StatusCode holdPosition() {
-        return wristMotor.setControl(
-                positionVoltage.withPosition(wristMotor.getPosition().getValue()));
+    public StatusCode moveTo(Angle setpoint) {
+        return wristMotor.setControl(positionVoltage.withPosition(setpoint));
     }
 
     @Override
-    public StatusCode moveTo(Angle setpoint) {
-        return wristMotor.setControl(positionVoltage.withPosition(setpoint));
+    public void updateInputs(WristIOInputs inputs) {
+        inputs.updateAll(
+                wristMotor.getPosition().getValue(),
+                wristMotor.getVelocity().getValue(),
+                wristMotor.getMotorVoltage().getValue(),
+                wristMotor.getStatorCurrent().getValue());
     }
 }
